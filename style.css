@@ -110,6 +110,10 @@ button {
     background-color: #2ec973;
 }
 
+.active {
+    background-color: #17181a;
+}
+
 /* FOOTER */
 
 footer {
