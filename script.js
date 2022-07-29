@@ -1,25 +1,40 @@
 const buttons = document.querySelectorAll('button');
 const result = document.querySelector('.result');
-const typed = document.querySelector('.typed');
-let type = '';
-let displayText = '';
+const clean = document.querySelector('.clean');
+
+let typedNum = '';
+let typingNum = '';
+let operation = '';
 
 window.onload = () => {
     result.textContent = '0';
 }
 
 function populateDisplay(e) {
-    if(e.target.value >= 0) {
-        for(let i = 0; i < 1; i++) {
-            type += e.target.value
-        }
-    }
-    result.textContent = type
+    const className = e.target.className;
+    const value = e.target.value;
 
-    if (e.target.className === 'operator active') {
-        displayText = `${type} ${e.target.value}`
-        typed.textContent = displayText
-        type = ''
+    if(value >= 0) {
+        for(let i = 0; i < 1; i++) {
+            typingNum += value
+        }
+        result.textContent = typingNum
+    }
+
+    if (className === 'operator active') {
+        typedNum = typingNum;
+        typingNum = '';
+        operation = value;
+    }
+
+    calculateOnEqual(e);
+}
+
+function calculateOnEqual(e) {
+    const className = e.target.className;
+    if (className === 'equal active') {
+        typingNum = operate(typedNum, operation, typingNum);
+        result.textContent = typingNum
     }
 }
 
@@ -34,14 +49,14 @@ function removeActiveClass(e) {
 buttons.forEach(button => {
     button.addEventListener('mousedown', (e) => {
         addActiveClass(e);
-        populateDisplay(e)
+        populateDisplay(e);
     });
     button.addEventListener('mouseup', removeActiveClass);
     button.addEventListener('mouseleave', removeActiveClass);
 })
 
 function add(a, b) {
-    return a + b
+    return +a + +b
 }
 
 function subtract(a, b) {
@@ -67,3 +82,11 @@ function operate (a, operator, b) {
         return divide (a, b)
     }
 }
+
+clean.addEventListener('click', () => {
+    typedNum = '';
+    amountOfClicks = 0;
+    typingNum = '';
+    operation = '';
+    result.textContent = '0';
+});
