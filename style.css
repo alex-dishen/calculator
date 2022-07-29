@@ -96,6 +96,12 @@ button {
     color: #f6444e;
 }
 
+.delete {
+    width: 100%;
+    grid-column-start: 2;
+    grid-column-end: 4;
+}
+
 .operator {
     background-color: #ff9500;
 }

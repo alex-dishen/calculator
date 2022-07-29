@@ -1,8 +1,35 @@
 const buttons = document.querySelectorAll('button');
 
 buttons.forEach(button => {
-    button.addEventListener('mousedown', () => {button.classList.add('active')});
-    button.addEventListener('mouseup', () => {button.classList.remove('active')});
+    button.addEventListener('mousedown', addActiveClass);
+    button.addEventListener('mouseup', removeActiveClass);
+    button.addEventListener('mouseleave', removeActiveClass);
 })
 
-window.addEventListener('keydown', (e) => {console.log(e.key)})
+function add(a, b) {
+    return a + b
+}
+
+function subtract(a, b) {
+    return a - b
+}
+
+function multiply (a, b) {
+    return a * b
+}
+
+function divide (a, b) {
+    return a / b
+}
+
+function operate (a, operator, b) {
+    if(operator === '+') {
+        return add(a, b)
+    } else if (operator === '-') {
+        return subtract(a, b)
+    } else if (operator === '*') {
+        return multiply (a, b)
+    } else if (operator === '/') {
+        return divide (a, b)
+    }
+}
