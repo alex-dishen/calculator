@@ -1,10 +1,12 @@
 const buttons = document.querySelectorAll('button');
 const result = document.querySelector('.result');
+const typed = document.querySelector('.typed');
 const clean = document.querySelector('.clean');
 
-let typedNum = '';
 let typingNum = '';
-let operation = '';
+let typedNum = '';
+let operator = '';
+let clicks = 0;
 
 window.onload = () => {
     result.textContent = '0';
@@ -22,11 +24,22 @@ function populateDisplay(e) {
     }
 
     if (className === 'operator active') {
-        typedNum = typingNum;
-        typingNum = '';
-        operation = value;
-    }
+        if (clicks > 0) {
+            if (typingNum) {
+                typedNum = operate(typedNum, operation, typingNum);
+            }
+            typed.textContent = `${typedNum} ${operation}`;
+        } else {
+            typedNum = typingNum;
+        }
 
+        operation = value;
+        typed.textContent = `${typedNum} ${operation}`;
+        result.textContent = typedNum;
+        typingNum = '';
+        ++clicks;
+    }
+// 12 + 7 - 5 * 3 = should yield 42
     calculateOnEqual(e);
 }
 
@@ -35,6 +48,7 @@ function calculateOnEqual(e) {
     if (className === 'equal active') {
         typingNum = operate(typedNum, operation, typingNum);
         result.textContent = typingNum
+        console.log(`On equal: ${typingNum}`);
     }
 }
 
@@ -85,8 +99,9 @@ function operate (a, operator, b) {
 
 clean.addEventListener('click', () => {
     typedNum = '';
-    amountOfClicks = 0;
     typingNum = '';
     operation = '';
+    typed.textContent = '';
     result.textContent = '0';
+    clicks = 0;
 });
