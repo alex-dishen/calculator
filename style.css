@@ -15,11 +15,15 @@ body {
     flex-direction: column;
 }
 
+/* MAIN */
+
 .main {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-top: 40px;
+    flex-shrink: 0;
 }
 
 /* DECORATIONS */
@@ -74,6 +78,8 @@ body {
 .result {
     font-size: 35px;
 }
+
+/* BUTTONS */
 
 .calculator-keys {
     display: grid;
@@ -138,4 +144,25 @@ footer {
 
 .github:hover {
     transform: rotate(360deg) scale(1.2);
+}
+
+/* QUERY MEDIA */
+
+@media (max-width: 720px) {
+    .red-ball {
+        height: 0px;
+        width: 0px;
+    }
+    
+    .green-ball {
+        height: 0px;
+        width: 0px;
+    }
+}
+
+@media (max-width: 389px) {
+    .calculator {
+        height: 610px;
+        width: 300px;
+    }
 }
