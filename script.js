@@ -2,6 +2,7 @@ const buttons = document.querySelectorAll('button');
 const result = document.querySelector('.result');
 const typed = document.querySelector('.typed');
 const clean = document.querySelector('.clean');
+const backspace = document.querySelector('.backspace');
 
 let oldNum = '';
 let currNum = '';
@@ -15,6 +16,7 @@ window.onload = () => {
 
 function calculateOnEqual(e) {
     const className = e.target.className;
+
     if (className === 'equal active') {
         if (oldNum && currNum) {
             typed.textContent = `${currNum} ${operation} ${oldNum} =`;
@@ -22,6 +24,7 @@ function calculateOnEqual(e) {
             currNum = oldNum;
             result.textContent = oldNum;
         }
+
         oldNum = '';
         ++equalClicks;
     }
@@ -33,17 +36,20 @@ function calculateOnOperator(e) {
 
     if (className === 'operator active') {
         if (clicks > 0) {
-            if (oldNum) {
+            if (oldNum || currNum) {
                 currNum = operate(currNum, operation, oldNum);
+                typed.textContent = `${currNum} ${operation}`;
             }
-            typed.textContent = `${currNum} ${operation}`;
         } else {
             currNum = oldNum;
         }
 
         operation = value;
-        typed.textContent = `${currNum} ${operation}`;
-        result.textContent = currNum;
+        if (currNum) {
+            typed.textContent = `${currNum} ${operation}`;
+            result.textContent = currNum;
+        }
+
         oldNum = '';
         ++clicks;
     }
@@ -75,6 +81,11 @@ function removeActiveClass(e) {
     e.target.classList.remove('active');
 }
 
+function removeLastElement(string) {
+    oldNum = string.slice(0, string.length - 1);
+    result.textContent = oldNum;
+}
+
 function operate (firstNumber, operator, secondNumber) {
     if(operator === '+') return +firstNumber + +secondNumber;
     if (operator === '-') return firstNumber - secondNumber;
@@ -100,3 +111,5 @@ clean.addEventListener('click', () => {
     clicks = 0;
     equalClicks = 0;
 });
+
+backspace.addEventListener('click', () => {removeLastElement(oldNum)});
