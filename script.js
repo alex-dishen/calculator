@@ -10,12 +10,14 @@ let operation = '';
 let clicks = 0;
 let equalClicks = 0;
 
-window.onload = () => {
-    result.textContent = '0';
-}
-
 function calculateOnEqual(e) {
-    const className = e.target.className;
+    let className = e.target.className;
+
+    //KEYBOARD CONNECTION
+    if(e.key) {
+        const key = document.querySelector(`button[data-key="${e.keyCode}"]`);
+        className = key.className
+    }
 
     if (className === 'equal active') {
         if (oldNum && currNum) {
@@ -31,8 +33,15 @@ function calculateOnEqual(e) {
 }
 
 function calculateOnOperator(e) {
-    const className = e.target.className;
-    const value = e.target.value;
+    let className = e.target.className;
+    let value = e.target.value;
+
+    //KEYBOARD CONNECTION
+    if(e.key) {
+        const key = document.querySelector(`button[data-key="${e.keyCode}"]`);
+        value = key.value;
+        className = key.className
+    }
 
     if (className === 'operator active') {
         if (clicks > 0) {
@@ -56,7 +65,13 @@ function calculateOnOperator(e) {
 }
 
 function populateDisplay(e) {
-    const value = e.target.value;
+    let value = e.target.value;
+
+    //KEYBOARD CONNECTION
+    if(e.key) {
+        const key = document.querySelector(`button[data-key="${e.keyCode}"]`);
+        value = key.value;
+    }
 
     if (currNum === '') {
         typed.textContent = '';
@@ -81,9 +96,31 @@ function removeActiveClass(e) {
     e.target.classList.remove('active');
 }
 
+
+//KEYBOARD CONNECTION
+function addActiveToKeyboard(e) {
+    const key = document.querySelector(`button[data-key="${e.keyCode}"]`);
+    key.classList.add('active');
+}
+
+function removeActiveFromKeyboard(e) {
+    const key = document.querySelector(`button[data-key="${e.keyCode}"]`);
+    key.classList.remove('active');
+}
+
 function removeLastElement(string) {
     oldNum = string.slice(0, string.length - 1);
     result.textContent = oldNum;
+}
+
+function cleanDisplay() {
+    currNum = '';
+    oldNum = '';
+    operation = '';
+    typed.textContent = '';
+    result.textContent = '';
+    clicks = 0;
+    equalClicks = 0;
 }
 
 function operate (firstNumber, operator, secondNumber) {
@@ -102,14 +139,22 @@ buttons.forEach(button => {
     button.addEventListener('mouseleave', removeActiveClass);
 })
 
-clean.addEventListener('click', () => {
-    currNum = '';
-    oldNum = '';
-    operation = '';
-    typed.textContent = '';
-    result.textContent = '0';
-    clicks = 0;
-    equalClicks = 0;
-});
+clean.addEventListener('click', cleanDisplay);
 
 backspace.addEventListener('click', () => {removeLastElement(oldNum)});
+
+//KEYBOARD CONNECTION
+window.addEventListener('keydown', (e) => {
+    addActiveToKeyboard(e);
+    populateDisplay(e);
+    //BACKSPACE
+    if(e.keyCode === 8) {
+        removeLastElement(oldNum);
+    }
+    //DELETE
+    if(e.keyCode === 46) {
+        cleanDisplay();
+    }
+});
+
+window.addEventListener('keyup', removeActiveFromKeyboard);
