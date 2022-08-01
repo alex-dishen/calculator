@@ -1,7 +1,10 @@
-const numberButtons = document.querySelectorAll('[data-number]');
-const currentOperationScreen = document.querySelector('.result');
+const numberButtons = document.querySelectorAll('.number');
+const operatorButtons = document.querySelectorAll('.operator');
+const firstOperationScreen = document.querySelector('.result');
 const lastOperationScreen = document.querySelector('.typed');
 const deleteBtn = document.querySelector('.backspace');
+const cleanBtn = document.querySelector('.clean');
+const equalBtn = document.querySelector('.equal');
 
 let firstNumber = '';
 let lastNumber = '';
@@ -19,17 +22,18 @@ function operate (firstNumber, operator, secondNumber) {
 }
 
 function resetScreen() {
-    currentOperationScreen.textContent = '';
+    firstOperationScreen.textContent = '';
     shouldResetScreen = false;
 }
 
 function setNumber(number) {
     if (shouldResetScreen) resetScreen();
-    currentOperationScreen.textContent += number;
+    firstOperationScreen.textContent += number;
 }
 
 function setOperator(operator) {
-    firstNumber = currentOperationScreen.textContent;
+    if (firstOperationScreen.textContent === '') return;    
+    firstNumber = firstOperationScreen.textContent;
     operation = operator;
     lastOperationScreen.textContent = `${firstNumber} ${operation}`;
     shouldResetScreen = true;
@@ -42,26 +46,32 @@ function colorButton(e) {
 }
 
 function deleteNumber() {
-    currentOperationScreen.textContent = 
-    currentOperationScreen.textContent.slice(0, -1);
+    firstOperationScreen.textContent = 
+    firstOperationScreen.textContent.slice(0, -1)
 }
 
-function evaluate() {
+function cleanCalculator() {
+    firstOperationScreen.textContent = '';
+    lastOperationScreen.textContent = '';
+    shouldResetScreen = false;
+}
+
+function calculate() {
     if (operation === '' || shouldResetScreen) return
-    lastNumber = currentOperationScreen.textContent;
-    currentOperationScreen.textContent = 
+    lastNumber = firstOperationScreen.textContent;
+    firstOperationScreen.textContent = 
     operate(firstNumber, operation, lastNumber);
     lastOperationScreen.textContent = `${firstNumber} ${operation} ${lastNumber} =`;
     operation = ''
 }
 
 function setPoint() {
-    if (currentOperationScreen.textContent === '')
-        currentOperationScreen.textContent = '0';
-        
-    if (currentOperationScreen.textContent.includes('.')) return;
-    
-    currentOperationScreen.textContent += '.';
+    if (firstOperationScreen.textContent === '')
+        firstOperationScreen.textContent = '0';
+
+    if (firstOperationScreen.textContent.includes('.')) return;
+
+    firstOperationScreen.textContent += '.';
 }
 
 function handleKeyboardINput(e) {
@@ -69,8 +79,9 @@ function handleKeyboardINput(e) {
     if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') 
         setOperator(e.key);
     if (e.key === '.') setPoint();
-    if (e.key === '=' || e.key === 'Enter') evaluate();
+    if (e.key === '=' || e.key === 'Enter') calculate();
     if (e.key === 'Backspace') deleteNumber();
+    if (e.key === 'Delete') cleanCalculator();
     colorButton(e);
 }
 
@@ -78,4 +89,9 @@ window.addEventListener('keydown', handleKeyboardINput);
 numberButtons.forEach(number => {
     number.addEventListener('click', () => {setNumber(number.value)})
 });
+operatorButtons.forEach(operator => {
+    operator.addEventListener('click', () => {setOperator(operator.value)})
+});
 deleteBtn.addEventListener('click', deleteNumber);
+cleanBtn.addEventListener('click', cleanCalculator);
+equalBtn.addEventListener('click', calculate);
