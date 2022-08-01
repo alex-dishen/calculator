@@ -8,7 +8,6 @@ let oldNum = '';
 let currNum = '';
 let operation = '';
 let clicks = 0;
-let equalClicks = 0;
 
 function calculateOnEqual(e) {
     let className = e.target.className;
@@ -22,13 +21,11 @@ function calculateOnEqual(e) {
     if (className === 'equal active') {
         if (oldNum && currNum) {
             typed.textContent = `${currNum} ${operation} ${oldNum} =`;
-            oldNum = operate(currNum, operation, oldNum);
-            currNum = oldNum;
-            result.textContent = oldNum;
+            currNum = operate(currNum, operation, oldNum);
+            result.textContent = currNum;
         }
 
-        oldNum = '';
-        ++equalClicks;
+        oldNum = ''
     }
 }
 
@@ -77,10 +74,8 @@ function populateDisplay(e) {
         typed.textContent = '';
     }
     
-    if(value >= 0) {
-        for(let i = 0; i < 1; i++) {
-            oldNum += value;
-        }
+    if(value >= 0 || value === '.') {
+        oldNum += value;
         result.textContent = oldNum;
     }
 
@@ -120,7 +115,6 @@ function cleanDisplay() {
     typed.textContent = '';
     result.textContent = '';
     clicks = 0;
-    equalClicks = 0;
 }
 
 function operate (firstNumber, operator, secondNumber) {
