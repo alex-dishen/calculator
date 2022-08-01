@@ -118,7 +118,10 @@ function cleanDisplay() {
 }
 
 function operate (firstNumber, operator, secondNumber) {
-    if(operator === '+') return +firstNumber + +secondNumber;
+    firstNumber = Number(firstNumber);
+    secondNumber = Number(secondNumber);
+
+    if (operator === '+') return firstNumber + secondNumber;
     if (operator === '-') return firstNumber - secondNumber;
     if (operator === '*') return firstNumber * secondNumber;
     if (operator === '/') return firstNumber / secondNumber;
@@ -133,22 +136,20 @@ buttons.forEach(button => {
     button.addEventListener('mouseleave', removeActiveClass);
 })
 
+function setNumber(number) {
+    result.textContent += number
+}
+
+function handleKeyboardINput(e) {
+    if (e.key >= 0 && e.key <= 9) setNumber(e.key)
+    if (e.key === '') {}
+}
+
 clean.addEventListener('click', cleanDisplay);
 
 backspace.addEventListener('click', () => {removeLastElement(oldNum)});
 
 //KEYBOARD CONNECTION
-window.addEventListener('keydown', (e) => {
-    addActiveToKeyboard(e);
-    populateDisplay(e);
-    //BACKSPACE
-    if(e.keyCode === 8) {
-        removeLastElement(oldNum);
-    }
-    //DELETE
-    if(e.keyCode === 46) {
-        cleanDisplay();
-    }
-});
+window.addEventListener('keydown', handleKeyboardINput);
 
-window.addEventListener('keyup', removeActiveFromKeyboard);
+// window.addEventListener('keyup', removeActiveFromKeyboard);
