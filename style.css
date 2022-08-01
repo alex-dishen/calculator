@@ -99,6 +99,10 @@ button {
     border-radius: 23px;
 }
 
+button:active {
+    background-color: #17181a;
+}
+
 .clean {
     background-color: #2d191e;
     color: #f6444e;
