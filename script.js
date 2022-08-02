@@ -1,7 +1,7 @@
 const numberButtons = document.querySelectorAll('.number');
 const operatorButtons = document.querySelectorAll('.operator');
-const firstOperationScreen = document.querySelector('.result');
-const lastOperationScreen = document.querySelector('.typed');
+const firstOperationScreen = document.querySelector('.first-screen');
+const lastOperationScreen = document.querySelector('.second-screen');
 const deleteBtn = document.querySelector('.backspace');
 const cleanBtn = document.querySelector('.clean');
 const equalBtn = document.querySelector('.equal');
@@ -26,15 +26,48 @@ function resetScreen() {
     shouldResetScreen = false;
 }
 
+function makeNumbersSmaller() {
+    const style = window.getComputedStyle(firstOperationScreen, null).getPropertyValue('font-size');
+    let fontSize = parseFloat(style);
+    firstOperationScreen.style.fontSize = (fontSize - 1) + 'px'
+}
+
+function makeNumbersBigger() {
+    const style = window.getComputedStyle(firstOperationScreen, null).getPropertyValue('font-size');
+    let fontSize = parseFloat(style);
+    firstOperationScreen.style.fontSize = (fontSize + 1) + 'px'
+}
+
+function addComa() {
+    firstOperationScreen.textContent = 
+    Number(firstOperationScreen.textContent).toLocaleString("en-US")
+}
+
+function removeComa() {
+    if (firstOperationScreen.textContent.includes(',')) {
+        firstOperationScreen.textContent = 
+            firstOperationScreen.textContent.replace(/,/g, '');
+    }
+}
+
 function setNumber(number) {
-    if (shouldResetScreen) resetScreen();
+    if (firstOperationScreen.textContent.length === 21) return;
+    if (shouldResetScreen || firstOperationScreen.textContent === '0') 
+        resetScreen();
+    
     firstOperationScreen.textContent += number;
+    //If there is already coma and you continue typing it throws NaN
+    removeComa();
+    addComa();
+    if (firstOperationScreen.textContent.length >= 11) makeNumbersSmaller();
 }
 
 function setOperator(operator) {
-    if (firstOperationScreen.textContent === '') return;    
-    firstNumber = firstOperationScreen.textContent;
+    if (operation !== '') calculate();
     operation = operator;
+    removeComa();
+    firstNumber = firstOperationScreen.textContent;
+    addComa();
     lastOperationScreen.textContent = `${firstNumber} ${operation}`;
     shouldResetScreen = true;
 }
@@ -46,21 +79,29 @@ function colorButton(e) {
 }
 
 function deleteNumber() {
+    let screenLength = firstOperationScreen.textContent.length;
     firstOperationScreen.textContent = 
-    firstOperationScreen.textContent.slice(0, -1)
+    firstOperationScreen.textContent.slice(0, -1);
+    if (screenLength >= 11 && screenLength <= 16) makeNumbersBigger();
 }
 
 function cleanCalculator() {
-    firstOperationScreen.textContent = '';
+    firstOperationScreen.textContent = '0';
     lastOperationScreen.textContent = '';
+    firstNumber = '';
+    lastNumber = '';
+    operation = '';
     shouldResetScreen = false;
+    firstOperationScreen.style.fontSize = '39';
 }
 
 function calculate() {
     if (operation === '' || shouldResetScreen) return
+    removeComa();
     lastNumber = firstOperationScreen.textContent;
     firstOperationScreen.textContent = 
     operate(firstNumber, operation, lastNumber);
+    addComa()
     lastOperationScreen.textContent = `${firstNumber} ${operation} ${lastNumber} =`;
     operation = ''
 }
@@ -74,7 +115,7 @@ function setPoint() {
     firstOperationScreen.textContent += '.';
 }
 
-function handleKeyboardINput(e) {
+function manageKeyboard(e) {
     if (e.key >= 0) setNumber(e.key);
     if (e.key === '+' || e.key === '-' || e.key === '*' || e.key === '/') 
         setOperator(e.key);
@@ -85,7 +126,7 @@ function handleKeyboardINput(e) {
     colorButton(e);
 }
 
-window.addEventListener('keydown', handleKeyboardINput);
+window.addEventListener('keydown', manageKeyboard);
 numberButtons.forEach(number => {
     number.addEventListener('click', () => {setNumber(number.value)})
 });

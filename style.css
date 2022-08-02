@@ -71,14 +71,14 @@ body {
     gap: 18px;
 }
 
-.typed {
+.second-screen {
     color: #b6b6b6;
     font-size: 17px;
     height: 15px;
 }
 
-.result {
-    font-size: 37px;
+.first-screen {
+    font-size: 39px;
 }
 
 /* BUTTONS */
@@ -170,5 +170,13 @@ footer {
     .calculator {
         height: 610px;
         width: 300px;
+    }
+
+    .second-screen {
+        font-size: 15px;
+    }
+    
+    .first-screen {
+        font-size: 34px;
     }
 }
