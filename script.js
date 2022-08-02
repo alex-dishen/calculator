@@ -21,9 +21,52 @@ function operate (firstNumber, operator, secondNumber) {
     if (operator === '/') return firstNumber / secondNumber;
 }
 
-function resetScreen() {
-    firstOperationScreen.textContent = '';
-    shouldResetScreen = false;
+function setNumber(number) {
+    if (firstOperationScreen.textContent.length === 21) return;
+    if (shouldResetScreen || firstOperationScreen.textContent === '0') 
+        resetScreen();
+    
+    firstOperationScreen.textContent += number;
+    //If there is already coma and you continue typing it throws NaN
+    removeComa();
+    addComa();
+    if (firstOperationScreen.textContent.length >= 11) makeNumbersSmaller();
+}
+
+function setOperator(operator) {
+    if (operation !== '') calculate();
+    operation = operator;
+    removeComa();
+    firstNumber = firstOperationScreen.textContent;
+    addComa();
+    lastOperationScreen.textContent = `${firstNumber} ${operation}`;
+    shouldResetScreen = true;
+}
+
+function setPoint() {
+    if (firstOperationScreen.textContent === '')
+        firstOperationScreen.textContent = '0';
+
+    if (firstOperationScreen.textContent.includes('.')) return;
+    
+    firstOperationScreen.textContent += '.';
+}
+
+function calculate() {
+    if (operation === '' || shouldResetScreen) return
+    removeComa();
+    lastNumber = firstOperationScreen.textContent;
+    firstOperationScreen.textContent = 
+    operate(firstNumber, operation, lastNumber);
+    addComa()
+    lastOperationScreen.textContent = `${firstNumber} ${operation} ${lastNumber} =`;
+    operation = ''
+}
+
+function colorButton(e) {
+    const value = document.querySelector(`button[value='${e.key}']`);
+    value.classList.add('active');
+    setTimeout(() => {value.classList.remove('active')}, 140);
 }
 
 function makeNumbersSmaller() {
@@ -50,34 +93,6 @@ function removeComa() {
     }
 }
 
-function setNumber(number) {
-    if (firstOperationScreen.textContent.length === 21) return;
-    if (shouldResetScreen || firstOperationScreen.textContent === '0') 
-        resetScreen();
-    
-    firstOperationScreen.textContent += number;
-    //If there is already coma and you continue typing it throws NaN
-    removeComa();
-    addComa();
-    if (firstOperationScreen.textContent.length >= 11) makeNumbersSmaller();
-}
-
-function setOperator(operator) {
-    if (operation !== '') calculate();
-    operation = operator;
-    removeComa();
-    firstNumber = firstOperationScreen.textContent;
-    addComa();
-    lastOperationScreen.textContent = `${firstNumber} ${operation}`;
-    shouldResetScreen = true;
-}
-
-function colorButton(e) {
-    const value = document.querySelector(`button[value='${e.key}']`);
-    value.classList.add('active');
-    setTimeout(() => {value.classList.remove('active')}, 140);
-}
-
 function deleteNumber() {
     let screenLength = firstOperationScreen.textContent.length;
     firstOperationScreen.textContent = 
@@ -85,34 +100,19 @@ function deleteNumber() {
     if (screenLength >= 11 && screenLength <= 16) makeNumbersBigger();
 }
 
+function resetScreen() {
+    firstOperationScreen.textContent = '';
+    shouldResetScreen = false;
+}
+
 function cleanCalculator() {
     firstOperationScreen.textContent = '0';
     lastOperationScreen.textContent = '';
-    firstNumber = '';
-    lastNumber = '';
     operation = '';
     shouldResetScreen = false;
     firstOperationScreen.style.fontSize = '39';
-}
-
-function calculate() {
-    if (operation === '' || shouldResetScreen) return
-    removeComa();
-    lastNumber = firstOperationScreen.textContent;
-    firstOperationScreen.textContent = 
-    operate(firstNumber, operation, lastNumber);
-    addComa()
-    lastOperationScreen.textContent = `${firstNumber} ${operation} ${lastNumber} =`;
-    operation = ''
-}
-
-function setPoint() {
-    if (firstOperationScreen.textContent === '')
-        firstOperationScreen.textContent = '0';
-
-    if (firstOperationScreen.textContent.includes('.')) return;
-
-    firstOperationScreen.textContent += '.';
+    if (window.innerWidth < 389)
+    firstOperationScreen.style.fontSize = '34';
 }
 
 function manageKeyboard(e) {
