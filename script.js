@@ -22,13 +22,13 @@ function operate (firstNumber, operator, secondNumber) {
 }
 
 function setNumber(number) {
-    if (firstOperationScreen.textContent.length === 21) return;
     if (shouldResetScreen || firstOperationScreen.textContent === '0') 
-        resetScreen();
-    
-    firstOperationScreen.textContent += number;
-    //If there is already coma and you continue typing it throws NaN
+    resetScreen();
+    if (firstOperationScreen.textContent.length === 21) return;
+    //If there is already coma and you continue typing it throws NaN removing
+    //come on this stage allows to continue typing
     removeComa();
+    firstOperationScreen.textContent += number;
     addComa();
     if (firstOperationScreen.textContent.length >= 11) makeNumbersSmaller();
 }
@@ -36,10 +36,14 @@ function setNumber(number) {
 function setOperator(operator) {
     if (operation !== '') calculate();
     operation = operator;
+    //If there is already coma and you continue typing it throws NaN removing
+    //come on this stage allows to continue typing
     removeComa();
     firstNumber = firstOperationScreen.textContent;
     addComa();
     lastOperationScreen.textContent = `${firstNumber} ${operation}`;
+    //shouldResetScreen is used in setNumber to check if it needs to refresh 
+    //the screen after operator was chosen
     shouldResetScreen = true;
 }
 
@@ -48,18 +52,21 @@ function setPoint() {
         firstOperationScreen.textContent = '0';
 
     if (firstOperationScreen.textContent.includes('.')) return;
-    
+
     firstOperationScreen.textContent += '.';
 }
 
 function calculate() {
     if (operation === '' || shouldResetScreen) return
+    //If there is already coma and you continue typing it throws NaN removing
+    //come on this stage allows to continue typing
     removeComa();
     lastNumber = firstOperationScreen.textContent;
     firstOperationScreen.textContent = 
     operate(firstNumber, operation, lastNumber);
     addComa()
     lastOperationScreen.textContent = `${firstNumber} ${operation} ${lastNumber} =`;
+    //Prevents from doing calculation after Enter was pressed
     operation = ''
 }
 
