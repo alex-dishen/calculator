@@ -7,7 +7,7 @@ const cleanBtn = document.querySelector('.clean');
 const equalBtn = document.querySelector('.equal');
 
 let firstNumber = '';
-let lastNumber = '';
+let lastNumber = null;
 let operation = '';
 let shouldResetScreen = false;
 
@@ -22,15 +22,23 @@ function operate (firstNumber, operator, secondNumber) {
 }
 
 function setNumber(number) {
-    if (shouldResetScreen || firstOperationScreen.textContent === '0') 
-    resetScreen();
+    //After user finished typing numbers, they could become smaller, and if
+    //user presses an operator and continuous typing the numbers will start
+    //not from font-size 39 or 34 but from the font-size they got to. This 
+    //if statement prevents it.
+    if (shouldResetScreen) {
+        firstOperationScreen.style.fontSize = '39';
+        if (window.innerWidth < 389)
+        firstOperationScreen.style.fontSize = '34';
+    }
+    if (shouldResetScreen || firstOperationScreen.textContent === '0') resetScreen();
     if (firstOperationScreen.textContent.length === 21) return;
     //If there is already coma and you continue typing it throws NaN removing
     //come on this stage allows to continue typing
     removeComa();
     firstOperationScreen.textContent += number;
     addComa();
-    if (firstOperationScreen.textContent.length >= 11) makeNumbersSmaller();
+    if (firstOperationScreen.textContent.length >= 10) makeNumbersSmaller();
 }
 
 function setOperator(operator) {
@@ -64,16 +72,29 @@ function calculate() {
     lastNumber = firstOperationScreen.textContent;
     firstOperationScreen.textContent = 
     operate(firstNumber, operation, lastNumber);
-    addComa()
+    setNumberSize();
+    //Prevents from throwing NaN if output includes such a big number that it shows e
+    if (!firstOperationScreen.textContent.includes('e')) addComa();
     lastOperationScreen.textContent = `${firstNumber} ${operation} ${lastNumber} =`;
     //Prevents from doing calculation after Enter was pressed
-    operation = ''
+    operation = '';
+    shouldResetScreen = true;
 }
 
 function colorButton(e) {
     const value = document.querySelector(`button[value='${e.key}']`);
     value.classList.add('active');
     setTimeout(() => {value.classList.remove('active')}, 140);
+}
+
+function setNumberSize() {
+    if (firstOperationScreen.textContent.includes('e')) {
+        if (firstOperationScreen.textContent.length > 17) {
+            firstOperationScreen.style.fontSize = '26px'
+        }
+    } else {
+        firstOperationScreen.style.fontSize = '24px'
+    }
 }
 
 function makeNumbersSmaller() {
@@ -108,7 +129,12 @@ function deleteNumber() {
 }
 
 function resetScreen() {
+    //Cleans second screen after you pressed Enter or = followed by a number.
+    if (lastOperationScreen.textContent.includes(lastNumber)) {
+        lastOperationScreen.textContent = '';
+    }
     firstOperationScreen.textContent = '';
+    lastNumber = null;
     shouldResetScreen = false;
 }
 
