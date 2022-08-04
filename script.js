@@ -90,7 +90,7 @@ function colorButton(e) {
 function setNumberSize() {
     if (firstOperationScreen.textContent.includes('e')) {
         if (firstOperationScreen.textContent.length > 17) {
-            firstOperationScreen.style.fontSize = '26px'
+            firstOperationScreen.style.fontSize = '25.5px'
         }
     } else {
         firstOperationScreen.style.fontSize = '24px'
@@ -98,20 +98,22 @@ function setNumberSize() {
 }
 
 function makeNumbersSmaller() {
-    const style = window.getComputedStyle(firstOperationScreen, null).getPropertyValue('font-size');
+    const style = window.getComputedStyle(firstOperationScreen, null)
+        .getPropertyValue('font-size');
     let fontSize = parseFloat(style);
-    firstOperationScreen.style.fontSize = (fontSize - 1) + 'px'
+    firstOperationScreen.style.fontSize = (fontSize - 1) + 'px';
 }
 
 function makeNumbersBigger() {
-    const style = window.getComputedStyle(firstOperationScreen, null).getPropertyValue('font-size');
+    const style = window.getComputedStyle(firstOperationScreen, null)
+        .getPropertyValue('font-size');
     let fontSize = parseFloat(style);
-    firstOperationScreen.style.fontSize = (fontSize + 1) + 'px'
+    firstOperationScreen.style.fontSize = (fontSize + 1) + 'px';
 }
 
 function addComa() {
     firstOperationScreen.textContent = 
-    Number(firstOperationScreen.textContent).toLocaleString("en-US")
+    Number(firstOperationScreen.textContent).toLocaleString("en-US");
 }
 
 function removeComa() {
@@ -161,10 +163,10 @@ function manageKeyboard(e) {
 
 window.addEventListener('keydown', manageKeyboard);
 numberButtons.forEach(number => {
-    number.addEventListener('click', () => {setNumber(number.value)})
+    number.addEventListener('click', () => {setNumber(number.value)});
 });
 operatorButtons.forEach(operator => {
-    operator.addEventListener('click', () => {setOperator(operator.value)})
+    operator.addEventListener('click', () => {setOperator(operator.value)});
 });
 deleteBtn.addEventListener('click', deleteNumber);
 cleanBtn.addEventListener('click', cleanCalculator);
