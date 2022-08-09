@@ -32,23 +32,15 @@ function setNumber(number) {
         firstOperationScreen.style.fontSize = '34';
     }
     if (shouldResetScreen || firstOperationScreen.textContent === '0') resetScreen();
-    if (firstOperationScreen.textContent.length === 21) return;
-    //If there is already coma and you continue typing it throws NaN removing
-    //come on this stage allows to continue typing
-    removeComa();
+    if (firstOperationScreen.textContent.length === 16) return;
     firstOperationScreen.textContent += number;
-    addComa();
     if (firstOperationScreen.textContent.length >= 10) makeNumbersSmaller();
 }
 
 function setOperator(operator) {
     if (operation !== '') calculate();
     operation = operator;
-    //If there is already coma and you continue typing it throws NaN removing
-    //come on this stage allows to continue typing
-    removeComa();
     firstNumber = firstOperationScreen.textContent;
-    addComa();
     lastOperationScreen.textContent = `${firstNumber} ${operation}`;
     //shouldResetScreen is used in setNumber to check if it needs to refresh 
     //the screen after operator was chosen
@@ -66,15 +58,10 @@ function setPoint() {
 
 function calculate() {
     if (operation === '' || shouldResetScreen) return
-    //If there is already coma and you continue typing it throws NaN removing
-    //come on this stage allows to continue typing
-    removeComa();
     lastNumber = firstOperationScreen.textContent;
     firstOperationScreen.textContent = 
     operate(firstNumber, operation, lastNumber);
     setNumberSize();
-    //Prevents from throwing NaN if output includes such a big number that it shows e
-    if (!firstOperationScreen.textContent.includes('e')) addComa();
     lastOperationScreen.textContent = `${firstNumber} ${operation} ${lastNumber} =`;
     //Prevents from doing calculation after Enter was pressed
     operation = '';
@@ -109,18 +96,6 @@ function makeNumbersBigger() {
         .getPropertyValue('font-size');
     let fontSize = parseFloat(style);
     firstOperationScreen.style.fontSize = (fontSize + 1) + 'px';
-}
-
-function addComa() {
-    firstOperationScreen.textContent = 
-    Number(firstOperationScreen.textContent).toLocaleString("en-US");
-}
-
-function removeComa() {
-    if (firstOperationScreen.textContent.includes(',')) {
-        firstOperationScreen.textContent = 
-            firstOperationScreen.textContent.replace(/,/g, '');
-    }
 }
 
 function deleteNumber() {
