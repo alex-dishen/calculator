@@ -24,15 +24,24 @@ function operate (firstNumber, operator, secondNumber) {
 function setNumber(number) {
     if (shouldResetScreen) firstOperationScreen.style.fontSize = '39';
     if (shouldResetScreen || firstOperationScreen.textContent === '0') resetScreen();
-    if (firstOperationScreen.textContent.length === 16) return;
+    if (firstOperationScreen.textContent.length >= 21) return;
+    //If there is already coma and user continue typing it throws NaN removing
+    //come on this stage allows to continue typing
+    removeComa();
     firstOperationScreen.textContent += number;
+    //Add coma back to be displayed
+    addComa();
     if (firstOperationScreen.textContent.length >= 10) makeNumbersSmaller();
 }
 
 function setOperator(operator) {
     if (operation !== '') calculate();
     operation = operator;
+    //If there is already coma and user continue typing it throws NaN removing
+    //come on this stage allows to continue typing
+    removeComa();
     firstNumber = firstOperationScreen.textContent;
+    addComa();
     lastOperationScreen.textContent = `${firstNumber} ${operation}`;
     //shouldResetScreen is used in setNumber to check if it needs to refresh 
     //the screen after operator was chosen
@@ -50,10 +59,15 @@ function setPoint() {
 
 function calculate() {
     if (operation === '' || shouldResetScreen) return
+    //If there is coma and user presses enter or = it throws NaN, removing
+    //come here allows to do the calculation
+    removeComa();
     lastNumber = firstOperationScreen.textContent;
     firstOperationScreen.textContent = 
     operate(firstNumber, operation, lastNumber);
     setNumberSize();
+    //Without the check for 'e' sign, if e sing will appear it will throw NaN
+    if (!firstOperationScreen.textContent.includes('e')) addComa();
     lastOperationScreen.textContent = `${firstNumber} ${operation} ${lastNumber} =`;
     //Prevents from doing calculation after Enter was pressed
     operation = '';
@@ -94,11 +108,27 @@ function makeNumbersBigger() {
     firstOperationScreen.style.fontSize = (fontSize + 1) + 'px';
 }
 
+function addComa() {
+    firstOperationScreen.textContent = 
+    Number(firstOperationScreen.textContent).toLocaleString("en-US");
+}
+
+function removeComa() {
+    if (firstOperationScreen.textContent.includes(',')) {
+        firstOperationScreen.textContent = 
+            firstOperationScreen.textContent.replace(/,/g, '');
+    }
+}
+
 function deleteNumber() {
     let screenLength = firstOperationScreen.textContent.length;
+    //If there is coma and user deletes a number it throws NaN removing
+    //come allows deleting
+    removeComa();
     firstOperationScreen.textContent = 
     firstOperationScreen.textContent.slice(0, -1);
-    if (screenLength >= 10 && screenLength <= 16) makeNumbersBigger();
+    addComa();
+    if (screenLength >= 10 && screenLength <= 21) makeNumbersBigger();
 }
 
 function resetScreen() {
@@ -116,7 +146,7 @@ function cleanCalculator() {
     lastOperationScreen.textContent = '';
     operation = '';
     shouldResetScreen = false;
-    firstOperationScreen.style.fontSize = '41';
+    firstOperationScreen.style.fontSize = '39';
 }
 
 function manageKeyboard(e) {
