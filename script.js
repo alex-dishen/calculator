@@ -22,15 +22,7 @@ function operate (firstNumber, operator, secondNumber) {
 }
 
 function setNumber(number) {
-    //After user finished typing numbers, they could become smaller, and if
-    //user presses an operator and continuous typing the numbers will start
-    //not from font-size 39 or 34 but from the font-size they got to. This 
-    //if statement prevents it.
-    if (shouldResetScreen) {
-        firstOperationScreen.style.fontSize = '39';
-        if (window.innerWidth < 389)
-        firstOperationScreen.style.fontSize = '34';
-    }
+    if (shouldResetScreen) firstOperationScreen.style.fontSize = '39';
     if (shouldResetScreen || firstOperationScreen.textContent === '0') resetScreen();
     if (firstOperationScreen.textContent.length === 16) return;
     firstOperationScreen.textContent += number;
@@ -76,11 +68,15 @@ function colorButton(e) {
 
 function setNumberSize() {
     if (firstOperationScreen.textContent.includes('e')) {
-        if (firstOperationScreen.textContent.length > 17) {
-            firstOperationScreen.style.fontSize = '25.5px'
+        firstOperationScreen.style.fontSize = '25px'
+    }
+    if (!firstOperationScreen.textContent.includes('e')) {
+        if (firstOperationScreen.textContent.length >= 14) {
+        firstOperationScreen.style.fontSize = '29px'
         }
-    } else {
-        firstOperationScreen.style.fontSize = '24px'
+        if (firstOperationScreen.textContent.length >= 18) {
+        firstOperationScreen.style.fontSize = '26px'
+        }
     }
 }
 
@@ -102,7 +98,7 @@ function deleteNumber() {
     let screenLength = firstOperationScreen.textContent.length;
     firstOperationScreen.textContent = 
     firstOperationScreen.textContent.slice(0, -1);
-    if (screenLength >= 11 && screenLength <= 16) makeNumbersBigger();
+    if (screenLength >= 10 && screenLength <= 16) makeNumbersBigger();
 }
 
 function resetScreen() {
@@ -120,9 +116,7 @@ function cleanCalculator() {
     lastOperationScreen.textContent = '';
     operation = '';
     shouldResetScreen = false;
-    firstOperationScreen.style.fontSize = '39';
-    if (window.innerWidth < 389)
-    firstOperationScreen.style.fontSize = '34';
+    firstOperationScreen.style.fontSize = '41';
 }
 
 function manageKeyboard(e) {
