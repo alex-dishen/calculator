@@ -1,5 +1,5 @@
 # Calculator
-The **Calculator** game is created according to the assignment from **The Odin Project** [course](https://www.theodinproject.com/paths/foundations/courses/foundations).
+The **Calculator** is created according to the assignment from **The Odin Project** [course](https://www.theodinproject.com/paths/foundations/courses/foundations).
 <br>
 <br>
 ![Preview](img/Calculator.png)
