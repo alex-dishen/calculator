@@ -2,7 +2,7 @@
 The **Calculator** game is created according to the assignment from **The Odin Project** [course](https://www.theodinproject.com/paths/foundations/courses/foundations).
 <br>
 <br>
-![Preview](img/calculator.png)
+![Preview](img/Calculator.png)
 
 ### 🔗 **Live preview** of the project is [here](https://alex-dishen.github.io/calculator/).
 
